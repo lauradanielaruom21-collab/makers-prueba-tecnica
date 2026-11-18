@@ -207,6 +207,20 @@ Todos se ejecutan desde la carpeta del proyecto.
 - Un runner también se puede lanzar desde la terminal: `mvn clean verify -Dit.test=RequeridosUiRunner`.
 - Al ejecutar desde IntelliJ no se genera el reporte HTML/PDF automáticamente. Para generarlo después: `mvn serenity:aggregate serenity:reports exec:java@reporte-pdf`.
 
+### Colección de Postman (prueba manual de la API)
+
+La colección [`postman/reqres-users.postman_collection.json`](postman/reqres-users.postman_collection.json) tiene los **mismos 7 casos** que la automatización de API, cada uno con sus validaciones:
+
+| Carpeta | Peticiones |
+|---|---|
+| **Requeridos (enunciado)** | 1. POST `/users` (guarda el id) · 2. GET `/users/{id}` (falla por BUG-API-01) |
+| **Adicionales** | 3. POST `/users` con validación de contrato · 4. GET `/users/2` · 5. GET `/users/23` (404) · 6. PUT `/users/2` · 7. DELETE `/users/2` |
+
+Cómo usarla:
+1. En Postman, clic en **Import** y **arrastra el archivo** (o elige **files**). No pegues la ruta en la caja de texto: Postman la toma como un comando cURL y responde *"Invalid cURL request"*.
+2. Las variables (`baseUrl`, `apiKey`…) y la cabecera `x-api-key` ya vienen configuradas.
+3. Ejecuta una por una con **Send**, o todas con **⋯ → Run collection**. Los resultados se ven en **Test Results**.
+
 ---
 
 ## 5. Qué prueba cada escenario

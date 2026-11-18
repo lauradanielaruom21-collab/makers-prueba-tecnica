@@ -1,0 +1,16 @@
+$kind: collection
+description: "Colección complementaria para ejecución manual o con Newman: newman run postman/reqres-users.postman_collection.json"
+variables:
+  baseUrl: https://reqres.in/api
+  apiKey: reqres-free-v1
+  userName: Test User
+  userJob: Automation Engineer
+  userId: ""
+auth:
+  - id: faddac1b-dde8-423a-9c87-8470f20ce2c8
+    type: apikey
+    name: apikey auth
+    credentials:
+      key: x-api-key
+      value: "{{apiKey}}"
+      in: header

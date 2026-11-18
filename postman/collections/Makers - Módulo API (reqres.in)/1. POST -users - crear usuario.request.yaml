@@ -1,0 +1,26 @@
+$kind: http-request
+name: 1. POST /users - crear usuario
+url: "{{baseUrl}}/users"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: '{"name": "{{userName}}", "job": "{{userJob}}"}'
+scripts:
+  - type: afterResponse
+    code: |-
+      const body = pm.response.json();
+      pm.test('Status 201', () => pm.response.to.have.status(201));
+      pm.test('Devuelve name y job enviados', () => {
+        pm.expect(body.name).to.eql(pm.collectionVariables.get('userName'));
+        pm.expect(body.job).to.eql(pm.collectionVariables.get('userJob'));
+      });
+      pm.test('Incluye id y createdAt', () => {
+        pm.expect(body.id).to.be.a('string').and.not.empty;
+        pm.expect(new Date(body.createdAt).toString()).to.not.eql('Invalid Date');
+      });
+      pm.test('Tiempo de respuesta < 3000 ms', () => pm.expect(pm.response.responseTime).to.be.below(3000));
+      pm.collectionVariables.set('userId', body.id);
+    language: text/javascript
+order: 1000
