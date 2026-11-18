@@ -4,3 +4,8 @@ target/
 .vscode/
 .DS_Store
 *.log
+
+# Archivos locales que crea la app de Postman al abrir el proyecto como workspace
+.postman/
+postman/collections/
+postman/globals/
