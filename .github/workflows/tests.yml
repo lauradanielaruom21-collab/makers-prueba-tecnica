@@ -15,17 +15,17 @@ on:
 
 jobs:
   pruebas:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         suite: [ ui, api ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Configurar Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "17"
@@ -33,7 +33,7 @@ jobs:
 
       - name: Instalar Chrome
         if: matrix.suite == 'ui'
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v2
 
       - name: Ejecutar pruebas (${{ matrix.suite }})
         env:
@@ -42,7 +42,7 @@ jobs:
 
       - name: Publicar reporte Serenity
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: reporte-serenity-${{ matrix.suite }}
           path: |
