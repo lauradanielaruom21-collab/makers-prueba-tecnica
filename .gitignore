@@ -7,5 +7,5 @@ target/
 
 # Archivos locales que crea la app de Postman al abrir el proyecto como workspace
 .postman/
-postman/collections/
-postman/globals/
+postman/*
+!postman/reqres-users.postman_collection.json
