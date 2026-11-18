@@ -8,6 +8,14 @@ Este repositorio es la solución de la prueba técnica de QA de Makers. Contiene
 
 Al terminar cada ejecución se genera un **reporte en HTML y en PDF** con los resultados. El HTML se abre solo en el navegador.
 
+### Acceso rápido a los entregables
+
+| Módulo | Ver |
+|---|---|
+| 🖥️ **Automatización web (SauceDemo)** | Escenarios: [`inicio_sesion.feature`](src/test/resources/features/ui/inicio_sesion.feature) · [`compra.feature`](src/test/resources/features/ui/compra.feature) |
+| 🔌 **Pruebas de API (reqres.in)** | Escenarios: [`usuarios.feature`](src/test/resources/features/api/usuarios.feature) · [Colección de Postman](postman/reqres-users.postman_collection.json) |
+| 📋 **Módulo funcional (MakersPay)** | [**Resumen del módulo**](docs/modulo-funcional/README.md) · [Plan de pruebas completo](docs/modulo-funcional/MakersPay-plan-de-pruebas.md) · [Matriz en Excel](docs/modulo-funcional/MakersPay-matriz-de-pruebas.xlsx) |
+
 ---
 
 ## Contenido
@@ -283,7 +291,7 @@ Sin cuenta, reqres.in permite **40 peticiones por día** desde programas como es
 
 ## 8. Módulo funcional MakersPay
 
-Documentación completa en [`docs/modulo-funcional/MakersPay-plan-de-pruebas.md`](docs/modulo-funcional/MakersPay-plan-de-pruebas.md) y la [matriz en Excel](docs/modulo-funcional/MakersPay-matriz-de-pruebas.xlsx).
+Resumen en [`docs/modulo-funcional/README.md`](docs/modulo-funcional/README.md). Documentación completa en [`docs/modulo-funcional/MakersPay-plan-de-pruebas.md`](docs/modulo-funcional/MakersPay-plan-de-pruebas.md) y la [matriz en Excel](docs/modulo-funcional/MakersPay-matriz-de-pruebas.xlsx).
 
 | Sección | Contenido |
 |---|---|
