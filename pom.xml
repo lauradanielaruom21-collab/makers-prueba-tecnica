@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>co.makers</groupId>
+    <artifactId>makers-prueba-tecnica</artifactId>
+    <version>1.0.0</version>
+    <name>Makers - Prueba Técnica QA</name>
+    <description>Automatización UI (SauceDemo) y API (reqres.in) con Serenity BDD + Screenplay + Cucumber</description>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <serenity.version>4.2.34</serenity.version>
+        <cucumber.version>7.20.1</cucumber.version>
+        <junit.platform.version>1.11.3</junit.platform.version>
+        <rest-assured.version>5.5.0</rest-assured.version>
+        <assertj.version>3.26.3</assertj.version>
+
+        <!-- Filtro de tags por defecto. Se sobreescribe con -Dtags="@smoke" -->
+        <tags>not @defecto-conocido</tags>
+        <headless.mode>true</headless.mode>
+        <!-- Abre el reporte HTML al terminar. Desactivar con -Dreporte.abrir=false (en CI no se abre) -->
+        <reporte.abrir>true</reporte.abrir>
+        <webdriver.driver>chrome</webdriver.driver>
+    </properties>
+
+    <dependencies>
+        <!-- Serenity BDD (declarado primero para que su versión de Cucumber tenga prioridad) -->
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-core</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-cucumber</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-screenplay</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-screenplay-webdriver</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-ensure</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-rest-assured</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-screenplay-rest</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Cucumber sobre JUnit Platform -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>${junit.platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Validación de contratos JSON Schema -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.18.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.16</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+            </plugin>
+
+            <!-- Los tests de aceptación se ejecutan en la fase integration-test -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.5.2</version>
+                <configuration>
+                    <includes>
+                        <include>**/*TestSuite.java</include>
+                    </includes>
+                    <!-- Silencia el aviso "Unable to find CDP implementation" de Selenium con versiones de Chrome
+                         más nuevas que el Selenium incluido en Serenity (no afecta la ejecución: no se usa CDP) -->
+                    <argLine>-Djava.util.logging.config.file=${project.basedir}/src/test/resources/logging.properties</argLine>
+                    <systemPropertyVariables>
+                        <cucumber.filter.tags>${tags}</cucumber.filter.tags>
+                        <webdriver.driver>${webdriver.driver}</webdriver.driver>
+                        <headless.mode>${headless.mode}</headless.mode>
+                    </systemPropertyVariables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Reporte de documentación viva de Serenity -->
+            <plugin>
+                <groupId>net.serenity-bdd.maven.plugins</groupId>
+                <artifactId>serenity-maven-plugin</artifactId>
+                <version>${serenity.version}</version>
+                <configuration>
+                    <reports>single-page-html</reports>
+                </configuration>
+                <dependencies>
+                    <!-- Necesario para generar target/site/serenity/serenity-summary.html -->
+                    <dependency>
+                        <groupId>net.serenity-bdd</groupId>
+                        <artifactId>serenity-single-page-report</artifactId>
+                        <version>${serenity.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>serenity-reports</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                            <goal>reports</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Reporte de resultados en HTML y PDF (target/reporte/), a partir del resumen de Serenity -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>reporte-pdf</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>co.makers.utils.GenerarReportePdf</mainClass>
+                            <classpathScope>test</classpathScope>
+                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                            <arguments>
+                                <argument>${project.build.directory}/site/serenity/serenity-summary.html</argument>
+                                <argument>${project.build.directory}/reporte</argument>
+                                <argument>${reporte.abrir}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- mvn clean verify -Psmoke → solo el smoke test exigido -->
+        <profile>
+            <id>smoke</id>
+            <properties>
+                <tags>@smoke and not @defecto-conocido</tags>
+            </properties>
+        </profile>
+        <!-- mvn clean verify -Pui / -Papi -->
+        <profile>
+            <id>ui</id>
+            <properties>
+                <tags>@ui and not @defecto-conocido</tags>
+            </properties>
+        </profile>
+        <profile>
+            <id>api</id>
+            <properties>
+                <tags>@api and not @defecto-conocido</tags>
+            </properties>
+        </profile>
+        <!-- mvn clean verify -Prequeridos → solo los escenarios de UI que pide el enunciado, con Chrome visible
+             (login exitoso, contraseña incorrecta, campos obligatorios) -->
+        <profile>
+            <id>requeridos</id>
+            <properties>
+                <tags>@ui and @smoke</tags>
+                <!-- Chrome visible para ver la automatización -->
+                <headless.mode>false</headless.mode>
+            </properties>
+        </profile>
+        <!-- mvn clean verify -Padicionales → solo los escenarios adicionales (plus) de UI, con Chrome visible -->
+        <profile>
+            <id>adicionales</id>
+            <properties>
+                <tags>@ui and @regresion</tags>
+                <!-- Chrome visible para ver la automatización -->
+                <headless.mode>false</headless.mode>
+            </properties>
+        </profile>
+        <!-- mvn clean verify -Ptodos → requeridos + adicionales de UI, con Chrome visible -->
+        <profile>
+            <id>todos</id>
+            <properties>
+                <tags>@ui and not @defecto-conocido</tags>
+                <headless.mode>false</headless.mode>
+            </properties>
+        </profile>
+        <!-- mvn clean verify -Papi-requeridos → flujo de la API que pide el enunciado (POST /users y POST → GET).
+             El GET del usuario recién creado falla a propósito por BUG-API-01 (reqres no persiste usuarios). -->
+        <profile>
+            <id>api-requeridos</id>
+            <properties>
+                <tags>@api and @requerimiento</tags>
+            </properties>
+        </profile>
+        <!-- mvn clean verify -Papi-adicionales → casos extra de la API (contrato, consulta, 404, PUT, DELETE) -->
+        <profile>
+            <id>api-adicionales</id>
+            <properties>
+                <tags>@api and @regresion</tags>
+            </properties>
+        </profile>
+        <!-- mvn clean verify -Pdefectos → ejecuta los escenarios que evidencian defectos conocidos (fallan a propósito) -->
+        <profile>
+            <id>defectos</id>
+            <properties>
+                <tags>@defecto-conocido</tags>
+            </properties>
+        </profile>
+        <!-- mvn clean verify -Pheaded → navegador visible -->
+        <profile>
+            <id>headed</id>
+            <properties>
+                <headless.mode>false</headless.mode>
+            </properties>
+        </profile>
+    </profiles>
+</project>

@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Respuesta de GET /users/{id}",
+  "type": "object",
+  "required": ["data"],
+  "properties": {
+    "data": { "$ref": "#/definitions/user" }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "required": ["id", "email", "first_name", "last_name", "avatar"],
+      "properties": {
+        "id":         { "type": "integer", "minimum": 1 },
+        "email":      { "type": "string", "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$" },
+        "first_name": { "type": "string", "minLength": 1 },
+        "last_name":  { "type": "string", "minLength": 1 },
+        "avatar":     { "type": "string", "pattern": "^https?://" }
+      }
+    }
+  }
+}
